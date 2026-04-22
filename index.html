@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Hayatımın En Güzel Anları 💖</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI';
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  overflow-x: hidden;
+}
+
+h1 {
+  margin-top: 20px;
+  color: white;
+  text-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.game {
+  display: grid;
+  grid-template-columns: repeat(4, 110px);
+  gap: 12px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.card {
+  width: 110px;
+  height: 110px;
+  border-radius: 15px;
+  background: white;
+  cursor: pointer;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: 0.5s;
+}
+
+.card.flip {
+  transform: rotateY(180deg);
+}
+
+.front, .back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  backface-visibility: hidden;
+}
+
+.front {
+  background: pink;
+}
+
+.back {
+  transform: rotateY(180deg);
+}
+
+.back img {
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+}
+
+#message {
+  display: none;
+  margin-top: 30px;
+  font-size: 22px;
+  color: white;
+  animation: fadeIn 2s;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+/* kalp animasyonu */
+.heart {
+  position: fixed;
+  bottom: -10px;
+  color: red;
+  animation: rise 5s linear infinite;
+}
+
+@keyframes rise {
+  to {
+    transform: translateY(-100vh);
+    opacity: 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h1>💖 Bizim Hikayemiz 💖</h1>
+
+<div class="game" id="game"></div>
+
+<div id="message">
+  💖 Seni Çok Seviyorum 💖<br>
+  İyi ki varsın KARIMMM ❤️
+</div>
+
+<audio autoplay loop>
+  <source src="https://www.image2url.com/r2/default/audio/1776880647740-3e83b99e-5124-4ab8-93a9-f2a121375e5b.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const images = [
+  "https://i.ibb.co/LDZFvf70/1.jpg","https://i.ibb.co/s9d3qJQh/2.jpg","https://i.ibb.co/XrmgTVQq/3.jpg","https://i.ibb.co/ZpWdmsPZ/4.jpg","https://i.ibb.co/Y7LzrYxF/5.jpg","https://i.ibb.co/bMx5pmdy/6.jpg",
+  "https://i.ibb.co/qL8HGLKt/7.jpg","https://i.ibb.co/xK1gnVhV/8.jpg","https://i.ibb.co/TxkGL29K/9.jpg","https://i.ibb.co/r2gKdnXW/10.jpg","https://i.ibb.co/Lhb7bvjk/11.jpg","https://i.ibb.co/nqMVkXxj/12.jpg"
+];
+
+let shuffled = images.sort(() => 0.5 - Math.random());
+const game = document.getElementById("game");
+
+let first = null;
+let second = null;
+let lock = false;
+let matched = 0;
+
+shuffled.forEach(src => {
+  const card = document.createElement("div");
+  card.classList.add("card");
+
+  card.innerHTML = `
+    <div class="front"></div>
+    <div class="back">
+      <img src="${src}">
+    </div>
+  `;
+
+  game.appendChild(card);
+
+  card.addEventListener("click", () => {
+    if (lock || card.classList.contains("flip")) return;
+
+    card.classList.add("flip");
+
+    if (!first) {
+      first = card;
+    } else {
+      second = card;
+      lock = true;
+
+      let img1 = first.querySelector("img").src;
+      let img2 = second.querySelector("img").src;
+
+      if (img1 === img2) {
+        matched += 2;
+        reset();
+
+        if (matched === images.length) {
+          document.getElementById("message").style.display = "block";
+          startHearts();
+        }
+      } else {
+        setTimeout(() => {
+          first.classList.remove("flip");
+          second.classList.remove("flip");
+          reset();
+        }, 900);
+      }
+    }
+  });
+});
+
+function reset() {
+  first = null;
+  second = null;
+  lock = false;
+}
+
+/* kalp efekti */
+function startHearts() {
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (20 + Math.random() * 20) + "px";
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 5000);
+  }, 300);
+}
+</script>
+
+</body>
+</html>
