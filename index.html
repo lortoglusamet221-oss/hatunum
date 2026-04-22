@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Hayatımın En Güzel Anları 💖</title>
+<title>Bizim Hikayemiz 💖</title>
 
 <style>
 body {
@@ -16,6 +16,15 @@ body {
 h1 {
   margin-top: 20px;
   color: white;
+}
+
+#startBtn {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 15px;
 }
 
 .game {
@@ -38,6 +47,10 @@ h1 {
 
 .card.flip {
   transform: rotateY(180deg);
+}
+
+.card.matched {
+  pointer-events: none;
 }
 
 .front, .back {
@@ -88,16 +101,18 @@ h1 {
 
 <h1>💖 Bizim Hikayemiz 💖</h1>
 
+<button id="startBtn">Oyunu Başlat ❤️</button>
+
+<audio id="music" loop>
+  <source src="https://www.image2url.com/r2/default/audio/1776880647740-3e83b99e-5124-4ab8-93a9-f2a121375e5b.mp3">
+</audio>
+
 <div class="game" id="game"></div>
 
 <div id="message">
   💖 Seni Çok Seviyorum 💖<br>
-  İyi ki varsın KARIMMM ❤️
+  Afferin benim akıllı karıma ❤️
 </div>
-
-<audio autoplay loop>
-  <source src="https://www.image2url.com/r2/default/audio/1776880647740-3e83b99e-5124-4ab8-93a9-f2a121375e5b.mp3">
-</audio>
 
 <script>
 const images = [
@@ -106,18 +121,19 @@ const images = [
 ];
 
 let shuffled = images.sort(() => 0.5 - Math.random());
+
 const game = document.getElementById("game");
+const music = document.getElementById("music");
 
 let first = null;
 let second = null;
 let lock = false;
 let matched = 0;
 
+// OYUN OLUŞTUR
 shuffled.forEach(src => {
   const card = document.createElement("div");
   card.classList.add("card");
-
-  // 🔥 ÖNEMLİ: eşleşme ID
   card.dataset.id = src;
 
   card.innerHTML = `
@@ -131,9 +147,7 @@ shuffled.forEach(src => {
 
   card.addEventListener("click", () => {
     if (lock || card.classList.contains("flip")) return;
-
-    // 🔥 aynı karta 2 kez basmayı engeller
-    if (first === card) return;
+    if (card === first) return;
 
     card.classList.add("flip");
 
@@ -143,16 +157,22 @@ shuffled.forEach(src => {
       second = card;
       lock = true;
 
-      // 🔥 DÜZELTME BURADA
       if (first.dataset.id === second.dataset.id) {
+        // EŞLEŞTİ
+        first.classList.add("matched");
+        second.classList.add("matched");
+
         matched += 2;
         reset();
 
+        // OYUN BİTTİ
         if (matched === images.length) {
           document.getElementById("message").style.display = "block";
           startHearts();
         }
+
       } else {
+        // GERİ KAPAT
         setTimeout(() => {
           first.classList.remove("flip");
           second.classList.remove("flip");
@@ -169,6 +189,7 @@ function reset() {
   lock = false;
 }
 
+// ❤️ kalpler
 function startHearts() {
   setInterval(() => {
     const heart = document.createElement("div");
@@ -177,10 +198,15 @@ function startHearts() {
     heart.style.left = Math.random() * 100 + "vw";
     heart.style.fontSize = (20 + Math.random() * 20) + "px";
     document.body.appendChild(heart);
-
     setTimeout(() => heart.remove(), 5000);
-  }, 300);
+  }, 250);
 }
+
+// 🎵 müzik başlat (browser fix)
+document.getElementById("startBtn").addEventListener("click", () => {
+  music.play();
+  document.getElementById("startBtn").style.display = "none";
+});
 </script>
 
 </body>
