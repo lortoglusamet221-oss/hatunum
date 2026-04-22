@@ -16,7 +16,6 @@ body {
 h1 {
   margin-top: 20px;
   color: white;
-  text-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
 .game {
@@ -31,7 +30,6 @@ h1 {
   width: 110px;
   height: 110px;
   border-radius: 15px;
-  background: white;
   cursor: pointer;
   position: relative;
   transform-style: preserve-3d;
@@ -69,19 +67,11 @@ h1 {
   margin-top: 30px;
   font-size: 22px;
   color: white;
-  animation: fadeIn 2s;
 }
 
-@keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity: 1;}
-}
-
-/* kalp animasyonu */
 .heart {
   position: fixed;
   bottom: -10px;
-  color: red;
   animation: rise 5s linear infinite;
 }
 
@@ -106,13 +96,13 @@ h1 {
 </div>
 
 <audio autoplay loop>
-  <source src="https://www.image2url.com/r2/default/audio/1776880647740-3e83b99e-5124-4ab8-93a9-f2a121375e5b.mp3" type="audio/mpeg">
+  <source src="https://www.image2url.com/r2/default/audio/1776880647740-3e83b99e-5124-4ab8-93a9-f2a121375e5b.mp3">
 </audio>
 
 <script>
 const images = [
   "https://i.ibb.co/LDZFvf70/1.jpg","https://i.ibb.co/s9d3qJQh/2.jpg","https://i.ibb.co/XrmgTVQq/3.jpg","https://i.ibb.co/ZpWdmsPZ/4.jpg","https://i.ibb.co/Y7LzrYxF/5.jpg","https://i.ibb.co/bMx5pmdy/6.jpg",
-  "https://i.ibb.co/LDZFvf70/5.jpg","https://i.ibb.co/s9d3qJQh/3.jpg","https://i.ibb.co/XrmgTVQq/6.jpg","https://i.ibb.co/ZpWdmsPZ/2.jpg","https://i.ibb.co/Y7LzrYxF/1.jpg","https://i.ibb.co/bMx5pmdy/4.jpg"
+  "https://i.ibb.co/LDZFvf70/1.jpg","https://i.ibb.co/s9d3qJQh/2.jpg","https://i.ibb.co/XrmgTVQq/3.jpg","https://i.ibb.co/ZpWdmsPZ/4.jpg","https://i.ibb.co/Y7LzrYxF/5.jpg","https://i.ibb.co/bMx5pmdy/6.jpg"
 ];
 
 let shuffled = images.sort(() => 0.5 - Math.random());
@@ -127,6 +117,9 @@ shuffled.forEach(src => {
   const card = document.createElement("div");
   card.classList.add("card");
 
+  // 🔥 ÖNEMLİ: eşleşme ID
+  card.dataset.id = src;
+
   card.innerHTML = `
     <div class="front"></div>
     <div class="back">
@@ -139,6 +132,9 @@ shuffled.forEach(src => {
   card.addEventListener("click", () => {
     if (lock || card.classList.contains("flip")) return;
 
+    // 🔥 aynı karta 2 kez basmayı engeller
+    if (first === card) return;
+
     card.classList.add("flip");
 
     if (!first) {
@@ -147,10 +143,8 @@ shuffled.forEach(src => {
       second = card;
       lock = true;
 
-      let img1 = first.querySelector("img").src;
-      let img2 = second.querySelector("img").src;
-
-      if (img1 === img2) {
+      // 🔥 DÜZELTME BURADA
+      if (first.dataset.id === second.dataset.id) {
         matched += 2;
         reset();
 
@@ -163,7 +157,7 @@ shuffled.forEach(src => {
           first.classList.remove("flip");
           second.classList.remove("flip");
           reset();
-        }, 900);
+        }, 800);
       }
     }
   });
@@ -175,7 +169,6 @@ function reset() {
   lock = false;
 }
 
-/* kalp efekti */
 function startHearts() {
   setInterval(() => {
     const heart = document.createElement("div");
